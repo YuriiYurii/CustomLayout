@@ -10,7 +10,7 @@ import android.widget.Button;
 
 public class MainActivity extends ActionBarActivity {
 
-    private Button mButton;
+
     private CustomLayout mCustomLayout;
 
     @Override
@@ -21,13 +21,20 @@ public class MainActivity extends ActionBarActivity {
 
         mCustomLayout = (CustomLayout) findViewById(R.id.custom_layout);
 
-        mButton = (Button) findViewById(R.id.addButton);
-        mButton.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.addButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Button button = new Button(MainActivity.this);
-                button.setText("newButton");
+                button.setText(R.string.new_button);
                 mCustomLayout.addView(button);
+            }
+        });
+        findViewById(R.id.resizeButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCustomLayout.getLayoutParams().height =
+                        MainActivity.this.getWindow().getDecorView().getHeight() / 2;
+                mCustomLayout.requestLayout();
             }
         });
     }

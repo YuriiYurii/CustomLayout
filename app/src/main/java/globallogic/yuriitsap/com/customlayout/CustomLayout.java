@@ -2,7 +2,6 @@ package globallogic.yuriitsap.com.customlayout;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -14,34 +13,54 @@ import java.util.Random;
  */
 public class CustomLayout extends ViewGroup {
 
-    private AttributeSet mAttributeSet;
+    private final Random mRandom;
 
     public CustomLayout(Context context, AttributeSet attr) {
         super(context, attr);
-        mAttributeSet = attr;
+        mRandom = new Random();
 
     }
-
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
         int measuredWidth = MeasureSpec.getSize(widthMeasureSpec);
         int measuredHeight = MeasureSpec.getSize(heightMeasureSpec);
-
+        int widthMode;
+        int heightMode;
         setMeasuredDimension(measuredWidth, heightMeasureSpec);
 
         for (int i = getChildCount() - 1; i >= 0; --i) {
             View child = getChildAt(i);
-            int widthMode = MeasureSpec.AT_MOST;
-            int heightMode = MeasureSpec.AT_MOST;
-            child.setLayoutParams(generateDefaultLayoutParams());
-            int newChildWidthMeasureSpec = MeasureSpec
+            LayoutParams layoutParams = (LayoutParams) child.getLayoutParams();
+            switch (layoutParams.height) {
+                case LayoutParams.WRAP_CONTENT:
+                    heightMode = MeasureSpec.AT_MOST;
+                    break;
+                case LayoutParams.MATCH_PARENT:
+                    heightMode = MeasureSpec.EXACTLY;
+                    break;
+                default:
+                    heightMode = MeasureSpec.UNSPECIFIED;
+                    break;
+            }
+            switch (layoutParams.width) {
+                case LayoutParams.WRAP_CONTENT:
+                    widthMode = MeasureSpec.AT_MOST;
+                    break;
+                case LayoutParams.MATCH_PARENT:
+                    widthMode = MeasureSpec.AT_MOST;
+                    break;
+                default:
+                    widthMode = MeasureSpec.UNSPECIFIED;
+                    break;
+            }
+            int childWidthMeasureSpec = MeasureSpec
                     .makeMeasureSpec(measuredWidth, widthMode);
-            int newChildHeightMeasureSpec = MeasureSpec
+            int childHeightMeasureSpec = MeasureSpec
                     .makeMeasureSpec(measuredHeight, heightMode);
-            child.measure(newChildWidthMeasureSpec, newChildHeightMeasureSpec);
-            ((LayoutParams) child.getLayoutParams()).setSizeMeasured(true);
+            child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+
 
         }
 
@@ -50,7 +69,6 @@ public class CustomLayout extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
 
-        Random random = new Random();
         int parentLeft = l + this.getPaddingLeft();
         int parenRight = r - this.getPaddingRight();
         int parentTop = t + this.getPaddingTop();
@@ -58,17 +76,23 @@ public class CustomLayout extends ViewGroup {
 
         for (int i = getChildCount() - 1; i >= 0; i--) {
             View child = getChildAt(i);
-            if (((LayoutParams) child.getLayoutParams()).isSizeMeasured()) {
+
+            //afer view is once laid out it's mLaid is never changed
+            //it is just set while first layout traversal
+            if (((LayoutParams) child.getLayoutParams()).isLaid && !viewIntersectsParentBounds(
+                    child, parentLeft, parentTop, parenRight, parentBottom)) {
                 continue;
             }
 
             int childWidth = child.getMeasuredWidth();
             int childHeight = child.getMeasuredHeight();
-            int currentLeft = random.nextInt(parenRight - childWidth - parentLeft) + parentLeft;
-            int currentTop = random.nextInt(parentBottom - childHeight - parentTop) + parentTop;
+            int currentLeft = mRandom.nextInt(parenRight - childWidth - parentLeft) + parentLeft;
+            int currentTop = mRandom.nextInt(parentBottom - childHeight - parentTop) + parentTop;
             int currentRight = currentLeft + childWidth;
             int currentBottom = currentTop + childHeight;
+
             child.layout(currentLeft, currentTop, currentRight, currentBottom);
+            ((LayoutParams) child.getLayoutParams()).isLaid = true;
 
 
         }
@@ -95,48 +119,30 @@ public class CustomLayout extends ViewGroup {
         return p instanceof LayoutParams;
     }
 
-    @Deprecated
-    public void gradualLayout(View child) {
-
-        int parentLeft = this.getPaddingLeft();
-        int parentTop = this.getPaddingTop();
-        int parentRight = this.getMeasuredWidth() - this.getPaddingRight();
-        int childBottom = this.getMeasuredHeight() - this.getPaddingBottom();
-        int currentLeft = parentLeft;
-        int currentTop = parentTop;
-        int maxHeight = 0;
-        if (child.getVisibility() != GONE) {
-            int currentWidth = child.getMeasuredWidth();
-            int currentHeight = child.getMeasuredHeight();
-            child.layout(currentLeft, currentTop, currentLeft + currentWidth,
-                    currentTop + currentHeight);
-            currentLeft += currentWidth;
-            if (currentLeft + currentWidth >= parentRight) {
-                currentLeft = parentLeft;
-                currentTop += maxHeight;
-                maxHeight = 0;
-            }
-            maxHeight = maxHeight < currentHeight ? currentHeight : maxHeight;
-            Log.e("TAG", "Current top" + currentTop);
+    public boolean viewIntersectsParentBounds(View child, int parentLeft, int parentTop,
+            int parentRight,
+            int parentBottom) {
+        if (child.getLeft() < parentLeft
+                || child.getRight() > parentRight
+                || child.getBottom() > parentBottom
+                || child.getTop() < parentTop) {
+            return true;
 
         }
+        return false;
 
     }
 
     public static class LayoutParams extends ViewGroup.LayoutParams {
 
 
-        public boolean sizeMeasured;
+        public boolean isLaid;
 
 
         public LayoutParams(int width, int height) {
             super(width, height);
         }
 
-        public LayoutParams(int width, int height, boolean measured) {
-            super(width, height);
-            this.sizeMeasured = measured;
-        }
 
         public LayoutParams(ViewGroup.LayoutParams layoutParams) {
             super(layoutParams);
@@ -146,14 +152,6 @@ public class CustomLayout extends ViewGroup {
 
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);
-        }
-
-        public boolean isSizeMeasured() {
-            return sizeMeasured;
-        }
-
-        public void setSizeMeasured(boolean sizeMeasured) {
-            this.sizeMeasured = sizeMeasured;
         }
     }
 }
