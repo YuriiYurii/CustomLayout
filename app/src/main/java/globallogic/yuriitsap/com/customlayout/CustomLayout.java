@@ -1,6 +1,7 @@
 package globallogic.yuriitsap.com.customlayout;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,17 +15,18 @@ import java.util.Random;
 public class CustomLayout extends ViewGroup {
 
     private final Random mRandom;
+    private final boolean
 
     public CustomLayout(Context context, AttributeSet attr) {
         super(context, attr);
         mRandom = new Random();
+        initAttributes(context,attr);
 
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
-        int measuredWidth = MeasureSpec.getSize(widthMeasureSpec);
+        int measur  edWidth = MeasureSpec.getSize(widthMeasureSpec);
         int measuredHeight = MeasureSpec.getSize(heightMeasureSpec);
         int widthMode;
         int heightMode;
@@ -117,6 +119,15 @@ public class CustomLayout extends ViewGroup {
     @Override
     protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
+    }
+    private void initAttributes(Context context,AttributeSet attributeSet){
+        TypedArray arr = context.obtainStyledAttributes(attributeSet, R.styleable.CustomLayout);
+        boolean overlaps = Boolean.parseBoolean(arr.getString(R.styleable.CustomLayout_overlap));
+
+        // do something here with your custom property
+
+        arr.recycle();
+
     }
 
     public boolean viewIntersectsParentBounds(View child, int parentLeft, int parentTop,
