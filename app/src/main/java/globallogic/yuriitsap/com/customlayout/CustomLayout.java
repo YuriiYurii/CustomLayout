@@ -15,18 +15,19 @@ import java.util.Random;
 public class CustomLayout extends ViewGroup {
 
     private final Random mRandom;
-    private final boolean
+    /** The flag that allows views to overlap each other */
+    private boolean overlap;
 
     public CustomLayout(Context context, AttributeSet attr) {
         super(context, attr);
         mRandom = new Random();
-        initAttributes(context,attr);
+        initFromAttributes(context, attr);
 
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int measur  edWidth = MeasureSpec.getSize(widthMeasureSpec);
+        int measuredWidth = MeasureSpec.getSize(widthMeasureSpec);
         int measuredHeight = MeasureSpec.getSize(heightMeasureSpec);
         int widthMode;
         int heightMode;
@@ -120,13 +121,20 @@ public class CustomLayout extends ViewGroup {
     protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
     }
-    private void initAttributes(Context context,AttributeSet attributeSet){
-        TypedArray arr = context.obtainStyledAttributes(attributeSet, R.styleable.CustomLayout);
-        boolean overlaps = Boolean.parseBoolean(arr.getString(R.styleable.CustomLayout_overlap));
 
-        // do something here with your custom property
+    private void initFromAttributes(Context context, AttributeSet attributeSet) {
+        final TypedArray typedArray = context.obtainStyledAttributes(attributeSet,
+                R.styleable.CustomLayout);
+        for (int n = typedArray.getIndexCount(); n >= 0; n--) {
+            int attr = typedArray.getIndex(n);
+            switch (attr) {
+                case R.styleable.CustomLayout_overlap:
+                    overlap = typedArray.getBoolean(n, false);
 
-        arr.recycle();
+            }
+        }
+
+        typedArray.recycle();
 
     }
 
