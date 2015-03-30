@@ -3,6 +3,7 @@ package globallogic.yuriitsap.com.customlayout;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -24,6 +25,7 @@ public class CustomLayout extends ViewGroup {
         initFromAttributes(context, attr);
 
     }
+
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

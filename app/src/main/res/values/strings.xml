@@ -6,4 +6,7 @@
     <string name="add_button">Add</string>
     <string name="resize_button">Resize</string>
     <string name="new_button">New Button</string>
+    <string name="title_activity_drawing">DrawingActivity</string>
+    <string name="title_activity_resolve_touch_events">ResolveTouchEventsActivity</string>
+    <string name="title_activity_frame_trial">FrameTrial</string>
 </resources>
