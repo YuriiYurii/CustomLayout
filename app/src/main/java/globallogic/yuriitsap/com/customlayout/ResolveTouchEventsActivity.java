@@ -34,7 +34,7 @@ public class ResolveTouchEventsActivity extends Activity {
                 @Override
                 public void onClick(View v) {
 
-                    Log.e(TAG, "Butoon was pressed" + number);
+//                    Log.e(TAG, "Butoon was pressed" + number);
                 }
             });
             mLinearLayout.addView(button);

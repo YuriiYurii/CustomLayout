@@ -2,7 +2,9 @@ package globallogic.yuriitsap.com.customlayout;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.widget.ScrollView;
 
@@ -16,6 +18,9 @@ public class CustomScrollView extends ScrollView {
     private boolean mIsScrolling;
     private int mActivePointerId;
     private static final String TAG = "CustomScrollView";
+    private VelocityTracker mVelocityTracker = null;
+    private float mStartPoint;
+    private float mEndPoint;
 
     public CustomScrollView(Context context) {
         super(context);
@@ -28,28 +33,50 @@ public class CustomScrollView extends ScrollView {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        int action = ev.getAction();
-//        if (action == MotionEvent.ACTION_MOVE && mIsScrolling) {
-//            return true;
-//        }
-        int index= ev.getActionIndex();
-        mActivePointerId=ev.getPointerId(index);
-        float currentY = ev.getY(mActivePointerId);
-        System.out.println("adsasdasd!");
-        switch (action){
-            case MotionEvent.ACTION_MOVE:
-                break;
-            case MotionEvent.ACTION_DOWN:
-                break;
-        }
-        return super.onInterceptTouchEvent(ev);
+        return true;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        int action = ev.getAction();
+        int index = ev.getActionIndex();
+        mActivePointerId = ev.getPointerId(index);
 
-        return super.onTouchEvent(ev);
+        switch (action) {
+
+            case MotionEvent.ACTION_DOWN:
+                mStartPoint = ev.getY(mActivePointerId);
+                if (mVelocityTracker == null) {
+                    mVelocityTracker = VelocityTracker.obtain();
+                } else {
+                    mVelocityTracker.clear();
+                }
+                mVelocityTracker.addMovement(ev);
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                mVelocityTracker.addMovement(ev);
+                mVelocityTracker.computeCurrentVelocity(1000);
+//                Log.d("", "X velocity: " +
+//                        mVelocityTracker.getXVelocity(mActivePointerId));
+//                Log.d("", "Y velocity: " +
+//                        mVelocityTracker.getYVelocity(mActivePointerId));
+                break;
+            case MotionEvent.ACTION_UP:
+                float endY = ev.getY(mActivePointerId);
+                mVelocityTracker.recycle();
+                mVelocityTracker = null;
+                int offset = (int) (mStartPoint - endY);
+                Log.e(TAG, "Offset - " + offset + " start point - " + mStartPoint + "end point "
+                        + endY);
+                getChildAt(0).offsetTopAndBottom(-offset);
+                Log.e(TAG, "Recycled");
+                break;
+        }
+        return true;
     }
+
+//    private void
 
     private void init() {
         mViewConfiguration = ViewConfiguration.get(getContext());
