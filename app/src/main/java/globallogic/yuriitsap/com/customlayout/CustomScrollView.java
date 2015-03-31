@@ -1,11 +1,15 @@
 package globallogic.yuriitsap.com.customlayout;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
+import android.view.View;
 import android.view.ViewConfiguration;
+import android.widget.OverScroller;
 import android.widget.ScrollView;
 
 /**
@@ -21,6 +25,9 @@ public class CustomScrollView extends ScrollView {
     private VelocityTracker mVelocityTracker = null;
     private float mStartPoint;
     private float mEndPoint;
+    private static final int SMOOTH_SCROLING_PIXEL_UNIT = 40;
+    private Handler mHandler;
+    private OverScroller mOverScroller;
 
     public CustomScrollView(Context context) {
         super(context);
@@ -29,6 +36,7 @@ public class CustomScrollView extends ScrollView {
 
     public CustomScrollView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     @Override
@@ -66,20 +74,43 @@ public class CustomScrollView extends ScrollView {
                 float endY = ev.getY(mActivePointerId);
                 mVelocityTracker.recycle();
                 mVelocityTracker = null;
-                int offset = (int) (mStartPoint - endY);
+                int offset = (int) (endY - mStartPoint);
                 Log.e(TAG, "Offset - " + offset + " start point - " + mStartPoint + "end point "
                         + endY);
-                getChildAt(0).offsetTopAndBottom(-offset);
+                mOverScroller.computeScrollOffset();
+                mOverScroller.startScroll(0, (int) mStartPoint, 0, (int)endY);
+
+
+//                scrollSmoothly(getChildAt(0), offset);
                 Log.e(TAG, "Recycled");
                 break;
         }
         return true;
     }
 
-//    private void
+    private void scrollSmoothly(final View view, int offset) {
+        for (int i = 0; i < Math.abs(offset) / SMOOTH_SCROLING_PIXEL_UNIT; i++) {
+            final int scrollingStage = offset > 0 ? SMOOTH_SCROLING_PIXEL_UNIT
+                    : -SMOOTH_SCROLING_PIXEL_UNIT;
+
+//            mHandler.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    view.offsetTopAndBottom(scrollingStage);
+//
+//
+//                }
+//            });
+
+
+        }
+
+    }
 
     private void init() {
         mViewConfiguration = ViewConfiguration.get(getContext());
         mTouchSlop = mViewConfiguration.getScaledTouchSlop();
+        mHandler = new Handler(Looper.getMainLooper());
+        mOverScroller = new OverScroller(getContext());
     }
 }
