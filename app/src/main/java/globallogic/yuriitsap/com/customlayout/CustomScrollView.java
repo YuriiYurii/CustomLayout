@@ -30,8 +30,7 @@ public class CustomScrollView extends ScrollView {
     private OverScroller mOverScroller;
 
     public CustomScrollView(Context context) {
-        super(context);
-        init();
+        this(context,null);
     }
 
     public CustomScrollView(Context context, AttributeSet attrs) {
