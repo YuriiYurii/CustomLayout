@@ -35,19 +35,19 @@ public class AnotherCustomView extends ViewGroup {
         int maxChildHeight = parentHeight;
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
-            int childWidthMeasureSpec = resolveMeasureSpec(parentWidth);
+            int childWidthMeasureSpec = resolveMeasureSpec(
+                    parentWidth - (getPaddingLeft() + getPaddingRight()));
             int childHeightMeasureSpec = resolveMeasureSpec(parentHeight);
             child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
-            maxChildHeight = maxChildHeight > child.getMeasuredHeight() ? maxChildHeight
-                    : child.getMeasuredHeight();
+            maxChildHeight = Math.max(maxChildHeight, child.getMeasuredHeight());
         }
-        setMeasuredDimension(parentWidth, maxChildHeight);
+        setMeasuredDimension(parentWidth, maxChildHeight * 4);
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        int currentLeft = l + getPaddingLeft();
-        int currentTop = 0;
+        int currentLeft = getPaddingLeft();
+        int currentTop = getPaddingTop();
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
             int currentBottom = currentTop + child.getMeasuredHeight();
@@ -60,18 +60,21 @@ public class AnotherCustomView extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (motionInChild(ev.getX(), ev.getY())) {
-            switch (ev.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    mStartPoint = ev.getX();
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    mEndPoint = ev.getX();
-                    if (mTouchSlop < Math.abs(mEndPoint - mStartPoint)) {
-                        return true;
-                    }
-            }
+
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                Log.e(TAG, "onInterceptTouchEvent ACTION_DOWN");
+                mStartPoint = ev.getX();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                Log.e(TAG, "onInterceptTouchEvent ACTION_MOVE");
+                mEndPoint = ev.getX();
+                if (mTouchSlop < Math.abs(mEndPoint - mStartPoint)) {
+                    requestDisallowInterceptTouchEvent(true);
+                    return true;
+                }
         }
+
         return false;
     }
 
@@ -79,40 +82,30 @@ public class AnotherCustomView extends ViewGroup {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                Log.e(TAG, "ACTION_DOWN");
-                break;
+                if (motionInChild(event.getX(), event.getY())) {
+                    mStartPoint = event.getY();
+                }
+//                mStartPoint = event.getX();
+                Log.e(TAG, "onTouchEvent ACTION_DOWN");
+
+                return true;
             case MotionEvent.ACTION_MOVE:
-                requestDisallowInterceptTouchEvent(true);
+                Log.e(TAG, "onTouchEvent ACTION_MOVE");
+//                if(getY()<)
                 mStartPoint = mEndPoint;
                 mEndPoint = event.getX();
                 int offset = (int) (mEndPoint - mStartPoint);
-                for (int i = 0; i < getChildCount(); i++) {
+                if (getChildAt(0).getLeft() + offset >= getLeft()
+                        || getChildAt(getChildCount() - 1).getRight() + offset <= getRight()) {
+                    break;
+                }
+                for (int i = getChildCount() - 1; i >= 0; i--) {
                     getChildAt(i).offsetLeftAndRight(offset);
                 }
+//                Log.e(TAG, "Start = " + mStartPoint + " End = " + mEndPoint);
                 return true;
         }
         return false;
-    }
-
-    @Override
-    public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
-        return new LayoutParams(getContext(), attrs);
-    }
-
-    @Override
-    protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams layoutParams) {
-        return new LayoutParams(layoutParams);
-    }
-
-    @Override
-    protected ViewGroup.LayoutParams generateDefaultLayoutParams() {
-        return new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-    }
-
-    @Override
-    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
-        return p instanceof LayoutParams;
     }
 
     private boolean motionInChild(float x, float y) {
