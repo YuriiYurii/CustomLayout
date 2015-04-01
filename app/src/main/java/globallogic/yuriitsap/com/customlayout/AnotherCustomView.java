@@ -63,11 +63,9 @@ public class AnotherCustomView extends ViewGroup {
 
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                Log.e(TAG, "onInterceptTouchEvent ACTION_DOWN");
                 mStartPoint = ev.getX();
                 break;
             case MotionEvent.ACTION_MOVE:
-                Log.e(TAG, "onInterceptTouchEvent ACTION_MOVE");
                 mEndPoint = ev.getX();
                 if (mTouchSlop < Math.abs(mEndPoint - mStartPoint)) {
                     requestDisallowInterceptTouchEvent(true);
@@ -82,31 +80,38 @@ public class AnotherCustomView extends ViewGroup {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (motionInChild(event.getX(), event.getY())) {
-                    mStartPoint = event.getY();
-                }
-//                mStartPoint = event.getX();
-                Log.e(TAG, "onTouchEvent ACTION_DOWN");
 
                 return true;
             case MotionEvent.ACTION_MOVE:
-                Log.e(TAG, "onTouchEvent ACTION_MOVE");
-//                if(getY()<)
                 mStartPoint = mEndPoint;
                 mEndPoint = event.getX();
                 int offset = (int) (mEndPoint - mStartPoint);
-                if (getChildAt(0).getLeft() + offset >= getLeft()
-                        || getChildAt(getChildCount() - 1).getRight() + offset <= getRight()) {
+                if (intersectsLeftBorder(offset) || intersectsRightBorder(offset)) {
                     break;
                 }
                 for (int i = getChildCount() - 1; i >= 0; i--) {
                     getChildAt(i).offsetLeftAndRight(offset);
                 }
-//                Log.e(TAG, "Start = " + mStartPoint + " End = " + mEndPoint);
                 return true;
         }
         return false;
     }
+
+    private boolean intersectsLeftBorder(int offset) {
+        Log.e(TAG,
+                "Child left = " + getChildAt(0).getLeft() + " parent left " + getLeft()
+                        + getPaddingLeft());
+        return getChildAt(0).getLeft() + offset >getPaddingLeft();
+
+
+    }
+
+    private boolean intersectsRightBorder(int offset) {
+        return getChildAt(getChildCount() - 1).getRight() + offset
+                < (getRight()-getLeft()) - getPaddingRight();
+
+    }
+
 
     private boolean motionInChild(float x, float y) {
         if ((x > getLeft() + getPaddingLeft() && x < getRight() - getPaddingRight() && (
