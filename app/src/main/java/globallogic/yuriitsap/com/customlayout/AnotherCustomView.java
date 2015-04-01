@@ -28,7 +28,6 @@ public class AnotherCustomView extends ViewGroup {
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
 
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
@@ -43,7 +42,6 @@ public class AnotherCustomView extends ViewGroup {
                     : child.getMeasuredHeight();
         }
         setMeasuredDimension(parentWidth, maxChildHeight);
-
     }
 
     @Override
@@ -119,8 +117,7 @@ public class AnotherCustomView extends ViewGroup {
 
     private boolean motionInChild(float x, float y) {
         if ((x > getLeft() + getPaddingLeft() && x < getRight() - getPaddingRight() && (
-                y > getPaddingTop()
-                        && y < getBottom() - getTop() - getPaddingBottom()))) {
+                y > getPaddingTop() && y < getBottom() - getTop() - getPaddingBottom()))) {
             return true;
         }
         return false;
