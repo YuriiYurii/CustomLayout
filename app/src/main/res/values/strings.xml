@@ -9,5 +9,8 @@
     <string name="title_activity_drawing">DrawingActivity</string>
     <string name="title_activity_resolve_touch_events">ResolveTouchEventsActivity</string>
     <string name="title_activity_frame_trial">FrameTrial</string>
+    <string name="title_activity_layout">LayoutActivity</string>
+    <string name="title_activity_touch_event_trial">TouchEventTrial</string>
     <string name="title_activity_offset_trial">OffsetTrial</string>
+>>>>>>> Custom Horizontal View is implemented. Validation is needed.
 </resources>

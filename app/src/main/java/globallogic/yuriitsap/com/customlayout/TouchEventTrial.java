@@ -1,33 +1,24 @@
 package globallogic.yuriitsap.com.customlayout;
 
-import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 
-public class FrameTrial extends Activity {
-
+public class TouchEventTrial extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_frame_trial);
-        findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                findViewById(R.id.button_to_move).offsetTopAndBottom(60);
-            }
-        });
+        setContentView(R.layout.activity_touch_event_trial);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_frame_trial, menu);
+        getMenuInflater().inflate(R.menu.menu_touch_event_trial, menu);
         return true;
     }
 

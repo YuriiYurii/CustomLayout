@@ -6,44 +6,41 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 
-public class MainActivity extends ActionBarActivity {
+public class LayoutActivity extends ActionBarActivity {
 
-
-    private CustomLayout mCustomLayout;
+    private AnotherCustomView mAnotherCustomView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_layout);
+        mAnotherCustomView = (AnotherCustomView) findViewById(R.id.horizontal_scroll_view);
+        for (int i = 0; i < 100; i++) {
+            Button button = new Button(LayoutActivity.this);
+            button
+                    .setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(LayoutActivity.this, "Your answer is correct!",
+                                    Toast.LENGTH_SHORT).
+                                    show();
 
-        setContentView(R.layout.activity_main);
+                        }
+                    });
+            button.setText("Button N" + i);
+            mAnotherCustomView.addView(button);
 
-        mCustomLayout = (CustomLayout) findViewById(R.id.custom_layout);
-
-//        findViewById(R.id.addButton).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Button button = new Button(MainActivity.this);
-//                button.setText(R.string.new_button);
-//                mCustomLayout.addView(button);
-//            }
-//        });
-//        findViewById(R.id.resizeButton).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mCustomLayout.getLayoutParams().height =
-//                        MainActivity.this.getWindow().getDecorView().getHeight() / 2;
-//                mCustomLayout.requestLayout();
-//            }
-//        });
+        }
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_layout, menu);
         return true;
     }
 
