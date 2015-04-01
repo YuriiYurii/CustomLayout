@@ -36,13 +36,11 @@ public class AnotherCustomView extends ViewGroup {
         int maxChildHeight = parentHeight;
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
-            LayoutParams layoutParams = child.getLayoutParams();
             int childWidthMeasureSpec = resolveMeasureSpec(parentWidth);
             int childHeightMeasureSpec = resolveMeasureSpec(parentHeight);
             child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
             maxChildHeight = maxChildHeight > child.getMeasuredHeight() ? maxChildHeight
                     : child.getMeasuredHeight();
-
         }
         setMeasuredDimension(parentWidth, maxChildHeight);
 
@@ -59,10 +57,7 @@ public class AnotherCustomView extends ViewGroup {
             child.layout(currentLeft, currentTop, currentRight,
                     currentBottom);
             currentLeft = currentRight;
-
-
         }
-
     }
 
     @Override
@@ -78,7 +73,6 @@ public class AnotherCustomView extends ViewGroup {
                         return true;
                     }
             }
-
         }
         return false;
     }

@@ -20,10 +20,6 @@
                 android:label="@string/title_activity_resolve_touch_events">
         </activity>
         <activity
-                android:name=".FrameTrial"
-                android:label="@string/title_activity_frame_trial">
-        </activity>
-        <activity
                 android:name=".LayoutActivity"
                 android:label="@string/title_activity_layout"
                 android:windowSoftInputMode="adjustPan">
