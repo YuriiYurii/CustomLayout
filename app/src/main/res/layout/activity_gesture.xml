@@ -1,0 +1,16 @@
+<FrameLayout xmlns:tools="http://schemas.android.com/tools"
+             xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+<globallogic.yuriitsap.com.customlayout.GestureScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="globallogic.yuriitsap.com.customlayout.GestureActivity"
+        >
+    <Button android:text="SOME text1" android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    <Button android:text="SOME text2" android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+</globallogic.yuriitsap.com.customlayout.GestureScrollView>
+        </FrameLayout>

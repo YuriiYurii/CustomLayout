@@ -19,7 +19,7 @@ public class MainActivity extends ActionBarActivity {
 
         setContentView(R.layout.activity_main);
 
-        mCustomLayout = (CustomLayout) findViewById(R.id.custom_layout);
+//        mCustomLayout = (CustomLayout) findViewById(R.id.custom_layout);
 
 //        findViewById(R.id.addButton).setOnClickListener(new View.OnClickListener() {
 //            @Override
