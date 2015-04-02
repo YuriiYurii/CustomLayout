@@ -85,6 +85,7 @@ public class AnotherCustomView extends ViewGroup {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                requestDisallowInterceptTouchEvent(true);
                 return true;
             case MotionEvent.ACTION_MOVE:
                 Log.e(TAG,"onTouchEvent ACTION_MOVE startPoint"+event.getX());

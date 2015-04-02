@@ -1,17 +1,39 @@
 package globallogic.yuriitsap.com.customlayout;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 
 public class GestureActivity extends ActionBarActivity {
 
+    private GestureScrollView mGestureScrollView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_gesture);
+        mGestureScrollView = (GestureScrollView) findViewById(R.id.vertical_scroll_view);
+        for (int i = 0; i < 10; i++) {
+            Button button = new Button(GestureActivity.this);
+            button
+                    .setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(GestureActivity.this, "Pressed",
+                                    Toast.LENGTH_SHORT).
+                                    show();
+
+                        }
+                    });
+            button.setText("Button N" + i);
+            mGestureScrollView.addView(button);
+        }
     }
 
 

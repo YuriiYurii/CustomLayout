@@ -52,21 +52,18 @@ public class GestureScrollView extends ViewGroup implements GestureDetector.OnGe
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-
-        switch (ev.getAction()) {
+    public boolean onInterceptTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mStartPoint = ev.getX();
+//                Log.e(TAG,"onInterceptTouchEvent e"+event.getX());
                 break;
             case MotionEvent.ACTION_MOVE:
-                float endPoint = ev.getX();
                 if (ViewConfiguration.get(getContext()).getScaledTouchSlop() < Math
-                        .abs(endPoint - mStartPoint)) {
+                        .abs(event.getX() - mStartPoint)) {
                     requestDisallowInterceptTouchEvent(true);
-                    return true;
+                    return mGestureDetector.onTouchEvent(event);
                 }
         }
-
         return false;
     }
 
@@ -95,12 +92,7 @@ public class GestureScrollView extends ViewGroup implements GestureDetector.OnGe
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-//        Log.e(TAG, "onScroll e1 = " + e1.getY() + " e2 = " + e2.getY() + " distance y" + (
-//              distanceY  ));
-//        Log.e(TAG, "e1 action" + e1.getAction() + "e2 action " + e2.getAction());
-
         int offset = (int) (e2.getY() - e2.getY() < 0 ? distanceY : -distanceY);
-//        Log.e(TAG, "offset = " + offset);
         for (int i = getChildCount() - 1; i >= 0; i--) {
             View child = getChildAt(i);
             child.offsetTopAndBottom(offset);
